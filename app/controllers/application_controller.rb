@@ -1,4 +1,3 @@
-
 require_relative '../../config/environment'
 
 class ApplicationController < Sinatra::Base
@@ -7,46 +6,53 @@ class ApplicationController < Sinatra::Base
     set :public_folder, 'public'
     set :views, 'app/views'
   end
-   
+
   get '/' do
-    redirect to '/articles'
+    redirect to "/articles"
   end
-  
-  # Index
-  get '/articles' do
+
+  # index
+  get "/articles" do
     @articles = Article.all
     erb :index
-    binding.pry
   end
-  # New
-  get 'articles/new' do
-    # @article = Article.new(params[:title], params[:content])
+
+  # new
+  get "/articles/new" do
+    @article = Article.new
     erb :new
   end
-  
-  # Create
-  post '/articles' do
-    article = Article.create(params)
-    redirect to "/articles/#{article.id}"
+
+  # create
+  post "/articles" do
+    @article = Article.create(params)
+    redirect to "/articles/#{ @article.id }"
   end
- 
-  # Edit
-  get '/articles/:id/edit' do
+
+  # show
+  get "/articles/:id" do
+    @article = Article.find(params[:id])
+    erb :show
+  end
+
+  # edit
+  get "/articles/:id/edit" do
     @article = Article.find(params[:id])
     erb :edit
   end
 
-  # Update
-  patch 'articles/:id' do
+  # update
+  patch "/articles/:id" do
+    @article = Article.find(params[:id])
     @article.update(params[:article])
     redirect to "/articles/#{ @article.id }"
   end
-   
-  # Destroy
-  delete '/articles/:id' do
+
+  #destroy
+  delete "/articles/:id" do
     Article.destroy(params[:id])
     redirect to "/articles"
-
   end
+
 
 end
